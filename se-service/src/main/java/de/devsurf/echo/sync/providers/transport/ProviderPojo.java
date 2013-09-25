@@ -15,13 +15,6 @@ public class ProviderPojo implements Provider {
 	private String version = "all";
 	private ProviderAuthentication auth;
 
-	public static final Type TYPE = new Type() {
-		@Override
-		public String value() {
-			return "provider";
-		}
-	};
-
 	@Override
 	public Type type() {
 		return TYPE;

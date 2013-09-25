@@ -1,7 +1,6 @@
 package de.devsurf.echo.sync.providers;
 
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
@@ -19,9 +17,9 @@ import de.devsurf.echo.frameworks.rs.api.Converter;
 import de.devsurf.echo.frameworks.rs.api.Publishable.AbstractEndpoint;
 import de.devsurf.echo.sync.Resources.ResourcePath;
 import de.devsurf.echo.sync.errors.ErrorResponse;
+import de.devsurf.echo.sync.providers.api.Provider;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderPersistency;
-import de.devsurf.echo.sync.providers.api.Provider;
 
 
 @Path(ResourcePath.PROVIDERS_PATH)
@@ -44,40 +42,37 @@ public class ProviderResource extends AbstractEndpoint {
 	@HEAD
 	@Path("{providerId}")
 	public Response isAvailable(@PathParam("providerId") String providerId) {
+		long id;
+		try {
+			id = Long.parseLong(providerId);
+		} catch (NumberFormatException e) {
+			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
+		}
+		
+		ProviderEntity result = persistence.find(id);
+		if(result == null) {
+			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
+		}
+		
 		return Response.ok().build();
 	}
 
 	/**
-	 * Returns the requested provider, if available.
-	 * @throws URISyntaxException 
+	 * Returns the requested provider, if available. 
 	 */
 	@GET
 	@Path("{providerId}")
-	public Response find(@PathParam("providerId") Long providerId) throws URISyntaxException {
-		ProviderEntity result = persistence.find(providerId);
+	public Response find(@PathParam("providerId") String providerId) {
+		long id;
+		try {
+			id = Long.parseLong(providerId);
+		} catch (NumberFormatException e) {
+			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
+		}
+		ProviderEntity result = persistence.find(id);
 		if(result == null) {
 			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
 		}
-//		ProviderPojo provider = new ProviderPojo();
-//		provider.id = providerId;
-//		provider.name = "fileNshare";
-//		provider.url = new URI("https://www.filenshare.com");
-//		
-//		ProviderAuthentication auth = new ProviderAuthentication();
-//		auth.mode = "basic";
-//		auth.data = new ArrayList<>();
-//		
-//		ProviderAuthenticationField username = new ProviderAuthenticationField();
-//		username.name = "username";
-//		username.type = ProviderAuthenticationFieldType.TEXT;
-//		auth.data.add(username);
-//		
-//		ProviderAuthenticationField password = new ProviderAuthenticationField();
-//		password.name = "password";
-//		password.type = ProviderAuthenticationFieldType.PASSWORD;
-//		auth.data.add(password);
-//		
-//		provider.auth = auth;
 		
 		return Response.ok(converter.convert(result)).build();
 	}
@@ -88,7 +83,6 @@ public class ProviderResource extends AbstractEndpoint {
 	@Override
 	@GET
 	@Consumes("*/*")
-	@Produces("application/json")
 	public Response get() {
 		List<ProviderEntity> entities = persistence.findAll();
 		List<Provider> providers = new ArrayList<>(entities.size());

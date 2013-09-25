@@ -1,4 +1,4 @@
-package de.devsurf.echo.sync.providers;
+package de.devsurf.echo.sync.providers.converter;
 
 import java.net.URI;
 import java.util.ArrayList;

@@ -12,7 +12,6 @@ import com.google.common.collect.Lists;
 
 @Embeddable
 public class ProviderAuthenticationEntity {
-//	@Id
 	@Column(name = "auth_type", nullable = false, length = 50)
 	private String type;
 

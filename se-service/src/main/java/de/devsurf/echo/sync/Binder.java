@@ -12,9 +12,9 @@ import de.devsurf.echo.frameworks.rs.system.api.Framework;
 import de.devsurf.echo.frameworks.rs.system.api.GenericBinder;
 import de.devsurf.echo.frameworks.rs.system.api.ResourceBinder;
 import de.devsurf.echo.frameworks.rs.system.api.TypeLiteralBuilder;
-import de.devsurf.echo.sync.persistence.PersistenceProvider;
-import de.devsurf.echo.sync.providers.ProviderConverter;
+import de.devsurf.echo.sync.persistence.PersistencyProvider;
 import de.devsurf.echo.sync.providers.api.Provider;
+import de.devsurf.echo.sync.providers.converter.ProviderConverter;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
 
 public class Binder implements InstallableModule {
@@ -30,7 +30,7 @@ public class Binder implements InstallableModule {
 	@Override
 	public void install(Framework framework) {
 		genericBinder.bindClass(EntityManager.class)
-				.toProvider(PersistenceProvider.class)/*.asSingleton()*/
+				.toProvider(PersistencyProvider.class)/*.asSingleton()*/
 				.install(framework);
 
 		Type type = literalBuilder.fromRawType(Converter.class)

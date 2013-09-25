@@ -9,19 +9,18 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-
+import de.devsurf.echo.frameworks.rs.api.Publishable.AbstractEndpoint;
 import de.devsurf.echo.frameworks.rs.api.Type;
 import de.devsurf.echo.frameworks.rs.api.Typed;
-import de.devsurf.echo.frameworks.rs.api.Publishable.AbstractEndpoint;
 import de.devsurf.echo.sync.Resources.ResourcePath;
 
 
@@ -36,6 +35,7 @@ public class SystemResource extends AbstractEndpoint {
 	}
 	
 	@GET
+	@Produces(MediaType.TEXT_HTML)
 	@Path("setup")
 	public Response setup() throws Exception {
 		return Response.ok(setup.doIt()).build();
@@ -83,14 +83,12 @@ public class SystemResource extends AbstractEndpoint {
 
 		public static final Type TYPE = new Type() {
 			@Override
-			@JsonValue
 			public String value() {
 				return "status";
 			}
 		};
 
 		@Override
-		@JsonProperty("type")
 		public Type type() {
 			return TYPE;
 		}
@@ -156,14 +154,12 @@ public class SystemResource extends AbstractEndpoint {
 
 		public static final Type TYPE = new Type() {
 			@Override
-			@JsonValue
 			public String value() {
 				return "registration";
 			}
 		};
 
 		@Override
-		@JsonProperty("type")
 		public Type type() {
 			return TYPE;
 		}
