@@ -3,36 +3,27 @@ package de.devsurf.echo.sync.providers.persistence;
 
 import javax.persistence.Embeddable;
 
-import de.devsurf.echo.sync.providers.api.ProviderAuthenticationFieldType;
+import de.devsurf.echo.sync.persistence.FieldEntity;
 
 
 @Embeddable
-public class ProviderAuthenticationFieldEntity {
-	private String name;
-	private ProviderAuthenticationFieldType type;
-	private String value;
+public class ProviderAuthenticationFieldEntity extends FieldEntity {
+	private boolean optional;
+	private String description;
 	
-	public ProviderAuthenticationFieldType getType() {
-		return type;
-	}
-	
-	public void setType(ProviderAuthenticationFieldType type) {
-		this.type = type;
+	public String getDescription() {
+		return description;
 	}
 
-	public String getName() {
-		return name;
+	public void setDescription(String description) {
+		this.description = description;
 	}
-	
-	public void setName(String name) {
-		this.name = name;
+
+	public boolean isOptional() {
+		return optional;
 	}
-	
-	public String getValue() {
-		return value;
-	}
-	
-	public void setValue(String value) {
-		this.value = value;
+
+	public void setOptional(boolean optional) {
+		this.optional = optional;
 	}
 }

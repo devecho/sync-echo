@@ -11,12 +11,12 @@ public class ProviderPersistency {
 	@Inject
 	private EntityManager manager;
 	
-	public ProviderEntity find(Long id) {
+	public ProviderEntity find(long id) {
 		return manager.find(ProviderEntity.class, id);
 	}
 	
 	public List<ProviderEntity> findAll() {
-		TypedQuery<ProviderEntity> query = manager.createNamedQuery("findAll", ProviderEntity.class);
+		TypedQuery<ProviderEntity> query = manager.createNamedQuery("providers.findAll", ProviderEntity.class);
 		return query.getResultList();
 	}
 }

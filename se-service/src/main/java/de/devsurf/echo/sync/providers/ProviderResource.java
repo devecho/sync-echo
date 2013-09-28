@@ -74,7 +74,7 @@ public class ProviderResource extends AbstractEndpoint {
 			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
 		}
 		
-		return Response.ok(converter.convert(result)).build();
+		return Response.ok(converter.convertTo(result)).build();
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class ProviderResource extends AbstractEndpoint {
 		List<ProviderEntity> entities = persistence.findAll();
 		List<Provider> providers = new ArrayList<>(entities.size());
 		for(ProviderEntity entity : entities) {
-			providers.add(converter.convert(entity));
+			providers.add(converter.convertTo(entity));
 		}
 		return Response.ok(new GenericEntity<List<Provider>>(providers){}).build();
 	}

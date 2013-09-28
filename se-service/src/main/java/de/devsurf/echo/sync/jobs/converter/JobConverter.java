@@ -1,9 +1,11 @@
-package de.devsurf.echo.sync.links.converter;
+package de.devsurf.echo.sync.jobs.converter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
 import de.devsurf.echo.sync.api.Field;
@@ -14,7 +16,7 @@ import de.devsurf.echo.sync.persistence.FieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderPersistency;
 
-public class LinkConverter implements TwoWayConverter<LinkEntity, Link> {
+public class JobConverter implements TwoWayConverter<LinkEntity, Link> {
 	@Inject
 	private ProviderPersistency providers;
 	

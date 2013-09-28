@@ -31,6 +31,14 @@ public class ErrorResponse {
 		return Response.status(Status.NOT_FOUND)
 				.type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
 	}
+	
+	public Response forStatus(Status status) {
+		String message = String
+				.format("%s for id [%s] wasn't found.", name, id);
+		String json = String.format("{ \"message\" : \"%s\"}", message);
+		return Response.status(status)
+				.type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+	}
 
 	public static ErrorResponse item(String name) {
 		return new ErrorResponse(name);

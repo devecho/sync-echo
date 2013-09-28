@@ -2,20 +2,14 @@ package de.devsurf.echo.sync.links.transport;
 
 import java.util.List;
 
-import de.devsurf.echo.frameworks.rs.api.Type;
+import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.links.api.Link;
-import de.devsurf.echo.sync.providers.api.ProviderAuthenticationField;
 
 public class LinkPojo implements Link {
 	private long id;
 	private long provider;
-	private List<ProviderAuthenticationField> data;
+	private List<Field> data;
 	
-	@Override
-	public Type type() {
-		return TYPE;
-	}
-
 	@Override
 	public long getId() {
 		return id;
@@ -35,11 +29,11 @@ public class LinkPojo implements Link {
 	}
 
 	@Override
-	public List<ProviderAuthenticationField> getData() {
+	public List<Field> getData() {
 		return data;
 	}
 
-	public void setData(List<ProviderAuthenticationField> data) {
+	public void setData(List<Field> data) {
 		this.data = data;
 	}
 }

@@ -8,10 +8,14 @@ import javax.persistence.EntityManager;
 
 import de.devsurf.echo.frameworks.rs.api.Converter;
 import de.devsurf.echo.frameworks.rs.api.InstallableModule;
+import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
 import de.devsurf.echo.frameworks.rs.system.api.Framework;
 import de.devsurf.echo.frameworks.rs.system.api.GenericBinder;
 import de.devsurf.echo.frameworks.rs.system.api.ResourceBinder;
 import de.devsurf.echo.frameworks.rs.system.api.TypeLiteralBuilder;
+import de.devsurf.echo.sync.links.api.Link;
+import de.devsurf.echo.sync.links.converter.LinkConverter;
+import de.devsurf.echo.sync.links.persistence.LinkEntity;
 import de.devsurf.echo.sync.persistence.PersistencyProvider;
 import de.devsurf.echo.sync.providers.api.Provider;
 import de.devsurf.echo.sync.providers.converter.ProviderConverter;
@@ -33,9 +37,14 @@ public class Binder implements InstallableModule {
 				.toProvider(PersistencyProvider.class)/*.asSingleton()*/
 				.install(framework);
 
-		Type type = literalBuilder.fromRawType(Converter.class)
+		Type providerType = literalBuilder.fromRawType(Converter.class)
 				.withType(ProviderEntity.class, Provider.class).build();
-		genericBinder.bindType(type).to(ProviderConverter.class)
+		genericBinder.bindType(providerType).to(ProviderConverter.class)
+				.install(framework);
+		
+		Type linkToPersistenceType = literalBuilder.fromRawType(TwoWayConverter.class)
+				.withType(LinkEntity.class, Link.class).build();
+		genericBinder.bindType(linkToPersistenceType).to(LinkConverter.class)
 				.install(framework);
 
 		EnumSet<Resources> resources = EnumSet.allOf(Resources.class);

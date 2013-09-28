@@ -5,12 +5,14 @@
 
 	<persistence-unit name="se-persistence">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>de.devsurf.echo.sync.links.persistence.LinkEntity</class>
 		<class>de.devsurf.echo.sync.providers.persistence.ProviderEntity</class>
 		<class>de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationEntity</class>
-		<class>de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity</class>
+		<class>de.devsurf.echo.sync.persistence.FieldEntity</class>
+		<!--class>de.devsurf.echo.sync.persistence.AdvancedFieldEntity</class-->
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:sqlite:${java.io.tmpdir}/sync-echo.db" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:sqlite:sync-echo.db" />
 			<property name="javax.persistence.jdbc.user" value="" />
 			<property name="javax.persistence.jdbc.password" value="" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLiteDialect" />

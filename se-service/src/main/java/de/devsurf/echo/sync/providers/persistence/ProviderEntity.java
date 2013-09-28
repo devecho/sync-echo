@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "providers")
-@NamedQueries(@NamedQuery(name = "findAll", query = "SELECT p FROM ProviderEntity p"))
+@NamedQueries(@NamedQuery(name = "providers.findAll", query = "SELECT p FROM ProviderEntity p"))
 public class ProviderEntity {
 	@Id
 	@GeneratedValue

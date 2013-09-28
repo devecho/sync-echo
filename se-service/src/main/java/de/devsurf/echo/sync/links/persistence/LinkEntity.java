@@ -11,13 +11,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity;
+import de.devsurf.echo.sync.persistence.FieldEntity;
+import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
 
 @Entity
 @Table(name = "links")
-@NamedQueries(@NamedQuery(name = "findAll", query = "SELECT p FROM LinkEntity p"))
+@NamedQueries(@NamedQuery(name = "links.findAll", query = "SELECT p FROM LinkEntity p"))
 public class LinkEntity {
 	@Id
 	@GeneratedValue
@@ -27,13 +29,14 @@ public class LinkEntity {
 	@Column(name = "user", nullable = false)
 	private long user;
 
-	@Column(name = "provider", nullable = false)
-	private long provider;
+	@OneToOne
+	@JoinColumn(name="provider", nullable=false)
+	private ProviderEntity provider;
 	
 	@ElementCollection
 	@CollectionTable(name = "link_fields", joinColumns = @JoinColumn(name = "link_field_id"))
 	@Column(name = "link_field")
-	private List<ProviderAuthenticationFieldEntity> fields;
+	private List<FieldEntity> fields;
 
 	public long getId() {
 		return id;
@@ -51,19 +54,19 @@ public class LinkEntity {
 		this.user = user;
 	}
 
-	public long getProvider() {
+	public ProviderEntity getProvider() {
 		return provider;
 	}
 
-	public void setProvider(long provider) {
+	public void setProvider(ProviderEntity provider) {
 		this.provider = provider;
 	}
 
-	public List<ProviderAuthenticationFieldEntity> getFields() {
+	public List<FieldEntity> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<ProviderAuthenticationFieldEntity> fields) {
+	public void setFields(List<FieldEntity> fields) {
 		this.fields = fields;
 	}
 }
