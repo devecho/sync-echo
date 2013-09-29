@@ -12,10 +12,7 @@ import de.devsurf.echo.sync.jobs.api.Job;
 import de.devsurf.echo.sync.jobs.api.JobSource;
 import de.devsurf.echo.sync.jobs.api.JobTarget;
 import de.devsurf.echo.sync.jobs.persistence.JobEntity;
-import de.devsurf.echo.sync.links.api.Link;
-import de.devsurf.echo.sync.links.persistence.LinkEntity;
 import de.devsurf.echo.sync.persistence.FieldEntity;
-import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderPersistency;
 
 public class JobConverter implements TwoWayConverter<JobEntity, Job> {
