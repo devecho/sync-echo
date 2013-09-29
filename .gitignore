@@ -5,5 +5,5 @@ target/*
 target/**
 */target/**
 **/target/**
-
+se-service/data
 test-output
