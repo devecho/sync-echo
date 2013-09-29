@@ -2,23 +2,26 @@ package de.devsurf.echo.sync.jobs.transport;
 
 import java.util.List;
 
-import de.devsurf.echo.frameworks.rs.api.Type;
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.jobs.api.Job;
+import de.devsurf.echo.sync.jobs.api.JobSource;
+import de.devsurf.echo.sync.jobs.api.JobTarget;
 
 public class JobPojo implements Job {
-	private String id;
+	private long id;
 	private String name;
 	private String description;
-	private String source;
-	private String target;
+	private boolean active;
+	private List<Field> data;
+//	private String source;
+//	private String target;
 
 	@Override
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -42,27 +45,23 @@ public class JobPojo implements Job {
 
 	@Override
 	public boolean isActive() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getSource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getTarget() {
-		// TODO Auto-generated method stub
-		return null;
+		return active;
 	}
 
 	@Override
 	public List<Field> getData() {
+		return data;
+	}
+
+	@Override
+	public JobSource getSource() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
+	@Override
+	public JobTarget getTarget() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 }

@@ -1,47 +1,73 @@
 package de.devsurf.echo.sync.jobs;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
 
 import de.devsurf.echo.frameworks.rs.api.Publishable.AbstractEndpoint;
 import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
 import de.devsurf.echo.sync.Resources.ResourcePath;
 import de.devsurf.echo.sync.errors.ErrorResponse;
-import de.devsurf.echo.sync.links.api.Link;
-import de.devsurf.echo.sync.links.persistence.LinkEntity;
-import de.devsurf.echo.sync.links.persistence.LinksPersistency;
-import de.devsurf.echo.sync.providers.persistence.ProviderPersistency;
+import de.devsurf.echo.sync.jobs.api.Job;
+import de.devsurf.echo.sync.jobs.persistence.JobEntity;
+import de.devsurf.echo.sync.jobs.persistence.JobsPersistency;
+import de.devsurf.echo.sync.persistence.ItemAlreadyExistsException;
 
 
 @Path(ResourcePath.JOBS_PATH)
 public class JobResource extends AbstractEndpoint {
 
 	@Inject
-	private LinksPersistency retrieval;
+	private JobsPersistency persistence;
 
 	@Inject
-	private TwoWayConverter<LinkEntity, Link> converter;
+	private TwoWayConverter<JobEntity, Job> converter;
 
 	@Override
 	public String description() {
 		return "Endpoint returns the information about the authenticated user.";
 	}
 
+	@Override
+	@GET
+	@Consumes("*/*")
+	@Produces("application/json")
+	public Response get() {
+		List<JobEntity> entities = persistence.findAll();
+		List<Job> jobs = new ArrayList<>(entities.size());
+		for (JobEntity entity : entities) {
+			jobs.add(converter.convertTo(entity));
+		}
+		return Response.ok(new GenericEntity<List<Job>>(jobs) {
+		}).build();
+	}
+
 	/**
-	 * Returns the requested provider, if available.
+	 * Returns the requested link is available for the user.
 	 */
 	@HEAD
 	@Path("{jobId}")
 	public Response isAvailable(@PathParam("jobId") String jobId) {
-		return ErrorResponse.item("job").withId(jobId).wasNotFound();
+		findJob(jobId);
+		return Response.ok().build();
 	}
 
 	/**
@@ -50,15 +76,67 @@ public class JobResource extends AbstractEndpoint {
 	@GET
 	@Path("{jobId}")
 	public Response find(@PathParam("jobId") String jobId) {
-		return ErrorResponse.item("job").withId(jobId).wasNotFound();
+		JobEntity result = findJob(jobId);
+		return Response.ok(converter.convertTo(result)).build();
 	}
 	
-	@Override
-	@GET
-	@Consumes("*/*")
-	@Produces("application/json")
-	public Response get() {
-		// TODO Auto-generated method stub
-		return super.get();
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response create(Job job) throws ItemAlreadyExistsException {
+		validateJob(job);
+
+		JobEntity target = converter.convertFrom(job);
+		long id = persistence.persist(target).getId();
+
+		return Response
+				.created(
+						UriBuilder.fromResource(getClass())
+								.path(Long.toString(id)).build())
+				.entity(converter.convertTo(target)).build();
+	}
+
+	@PUT
+	@Path("{jobId}")
+	public Response update(@PathParam("jobId") String jobId, Job job)
+			throws ItemAlreadyExistsException {
+		JobEntity result = findJob(jobId);
+
+		validateJob(job);
+
+		JobEntity target = converter.convertFrom(job);
+		if (target.getId() != result.getId()) {
+			throw new BadRequestException(ErrorResponse.item("id")
+					.withId(target.getId()).forStatus(Status.BAD_REQUEST));
+		}
+		persistence.merge(target);
+
+		return Response.ok(converter.convertTo(target)).build();
+	}
+
+	@DELETE
+	@Path("{jobId}")
+	public Response delete(@PathParam("jobId") String jobId) {
+		JobEntity result = findJob(jobId);
+		persistence.delete(result);
+		return Response.ok().build();
+	}
+	
+	private void validateJob(Job job) {
+		//TODO validate if source or target exists
+	}
+	
+	private JobEntity findJob(String linkId) {
+		long id;
+		try {
+			id = Long.parseLong(linkId);
+		} catch (NumberFormatException e) {
+			throw new WebApplicationException(ErrorResponse.item("jobs").withId(linkId).wasNotFound());
+		}
+
+		JobEntity result = persistence.find(id);
+		if (result == null) {
+			throw new WebApplicationException(ErrorResponse.item("jobs").withId(linkId).wasNotFound());
+		}
+		return result;
 	}
 }

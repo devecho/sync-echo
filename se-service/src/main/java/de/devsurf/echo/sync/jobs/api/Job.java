@@ -18,7 +18,7 @@ import de.devsurf.echo.sync.jobs.transport.JobPojo;
 @JsonTypeName("job")
 public interface Job {
 
-	public String getId();
+	public long getId();
 
 	public String getName();
 
@@ -26,9 +26,9 @@ public interface Job {
 	
 	public boolean isActive();
 
-	public String getSource();
+	public JobSource getSource();
 
-	public String getTarget();
+	public JobTarget getTarget();
 
 	public List<Field> getData();
 

@@ -5,29 +5,31 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.api.FieldType;
+import de.devsurf.echo.sync.jobs.api.Job;
+import de.devsurf.echo.sync.jobs.api.JobSource;
+import de.devsurf.echo.sync.jobs.api.JobTarget;
+import de.devsurf.echo.sync.jobs.persistence.JobEntity;
 import de.devsurf.echo.sync.links.api.Link;
 import de.devsurf.echo.sync.links.persistence.LinkEntity;
 import de.devsurf.echo.sync.persistence.FieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderPersistency;
 
-public class JobConverter implements TwoWayConverter<LinkEntity, Link> {
+public class JobConverter implements TwoWayConverter<JobEntity, Job> {
 	@Inject
 	private ProviderPersistency providers;
 	
 	@Override
-	public LinkEntity convertFrom(Link source) {
-		LinkEntity linkEntity = new LinkEntity();
+	public JobEntity convertFrom(Job source) {
+		JobEntity linkEntity = new JobEntity();
 		if(source.getId() != 0) {
 			linkEntity.setId(source.getId());
 		}
-		ProviderEntity provider = providers.find(source.getProvider());
-		linkEntity.setProvider(provider);
+//		ProviderEntity provider = providers.find(source.getProvider());
+//		linkEntity.setProvider(provider);
 		
 		linkEntity.setUser(1);//TODO change to user object and make link converter aware of context
 		
@@ -45,9 +47,9 @@ public class JobConverter implements TwoWayConverter<LinkEntity, Link> {
 	}
 	
 	@Override
-	public Link convertTo(final LinkEntity source) {
-		return new Link() {
-			private LinkEntity delegate = source;
+	public Job convertTo(final JobEntity source) {
+		return new Job() {
+			private JobEntity delegate = source;
 			
 			@Override
 			public long getId() {
@@ -55,8 +57,30 @@ public class JobConverter implements TwoWayConverter<LinkEntity, Link> {
 			}
 			
 			@Override
-			public long getProvider() {
-				return delegate.getProvider().getId();
+			public String getName() {
+				return delegate.getName();
+			}
+			
+			@Override
+			public String getDescription() {
+				return delegate.getDescription();
+			}
+			
+			@Override
+			public boolean isActive() {
+				return delegate.isActive();
+			}
+			
+			@Override
+			public JobSource getSource() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public JobTarget getTarget() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 			
 			@Override

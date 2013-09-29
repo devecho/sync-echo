@@ -13,6 +13,9 @@ import de.devsurf.echo.frameworks.rs.system.api.Framework;
 import de.devsurf.echo.frameworks.rs.system.api.GenericBinder;
 import de.devsurf.echo.frameworks.rs.system.api.ResourceBinder;
 import de.devsurf.echo.frameworks.rs.system.api.TypeLiteralBuilder;
+import de.devsurf.echo.sync.jobs.api.Job;
+import de.devsurf.echo.sync.jobs.converter.JobConverter;
+import de.devsurf.echo.sync.jobs.persistence.JobEntity;
 import de.devsurf.echo.sync.links.api.Link;
 import de.devsurf.echo.sync.links.converter.LinkConverter;
 import de.devsurf.echo.sync.links.persistence.LinkEntity;
@@ -42,9 +45,14 @@ public class Binder implements InstallableModule {
 		genericBinder.bindType(providerType).to(ProviderConverter.class)
 				.install(framework);
 		
-		Type linkToPersistenceType = literalBuilder.fromRawType(TwoWayConverter.class)
+		Type linkType = literalBuilder.fromRawType(TwoWayConverter.class)
 				.withType(LinkEntity.class, Link.class).build();
-		genericBinder.bindType(linkToPersistenceType).to(LinkConverter.class)
+		genericBinder.bindType(linkType).to(LinkConverter.class)
+				.install(framework);
+		
+		Type jobType = literalBuilder.fromRawType(TwoWayConverter.class)
+				.withType(JobEntity.class, Job.class).build();
+		genericBinder.bindType(jobType).to(JobConverter.class)
 				.install(framework);
 
 		EnumSet<Resources> resources = EnumSet.allOf(Resources.class);
