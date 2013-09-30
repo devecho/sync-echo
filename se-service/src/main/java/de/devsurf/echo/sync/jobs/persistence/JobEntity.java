@@ -2,6 +2,7 @@ package de.devsurf.echo.sync.jobs.persistence;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -11,7 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.google.common.collect.Lists;
 
 import de.devsurf.echo.sync.persistence.FieldEntity;
 
@@ -23,30 +27,40 @@ public class JobEntity {
 	@GeneratedValue
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
-	
+
 	@Column(name = "user", nullable = false)
 	private long user;
 
 	@Column(name = "name", nullable = false, length = 50)
 	private String name;
-	
+
 	@Column(name = "description", length = 256)
 	private String description;
-	
-	@Column(name = "active", nullable = false)
-	private boolean active;
-	
-	//TODO: source, target
-	
+
+	@Column(name = "enabled", nullable = false)
+	private boolean enabled;
+
+	@OneToOne(cascade = { CascadeType.ALL })
+	@JoinColumn(name = "source")
+	private JobTargetEntity source;
+
+	@OneToOne(cascade = { CascadeType.ALL })
+	@JoinColumn(name = "target")
+	private JobTargetEntity target;
+
 	@ElementCollection
 	@CollectionTable(name = "job_fields", joinColumns = @JoinColumn(name = "job_field_id"))
 	@Column(name = "job_field")
 	private List<FieldEntity> fields;
 
+	public JobEntity() {
+		fields = Lists.newArrayListWithExpectedSize(3);
+	}
+
 	public long getId() {
 		return id;
 	}
-	
+
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -75,12 +89,12 @@ public class JobEntity {
 		this.description = description;
 	}
 
-	public boolean isActive() {
-		return active;
+	public boolean isEnabled() {
+		return enabled;
 	}
 
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public List<FieldEntity> getFields() {
@@ -89,5 +103,21 @@ public class JobEntity {
 
 	public void setFields(List<FieldEntity> fields) {
 		this.fields = fields;
+	}
+
+	public JobTargetEntity getSource() {
+		return source;
+	}
+
+	public void setSource(JobTargetEntity source) {
+		this.source = source;
+	}
+
+	public JobTargetEntity getTarget() {
+		return target;
+	}
+
+	public void setTarget(JobTargetEntity target) {
+		this.target = target;
 	}
 }

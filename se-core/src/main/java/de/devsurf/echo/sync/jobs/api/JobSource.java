@@ -9,17 +9,16 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 import de.devsurf.echo.sync.api.Field;
-import de.devsurf.echo.sync.jobs.transport.JobPojo;
-import de.devsurf.echo.sync.links.api.Link;
+import de.devsurf.echo.sync.jobs.transport.JobSourceLinkPojo;
 
 @JsonPropertyOrder({ "type", "link", "data" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({ @org.codehaus.jackson.annotate.JsonSubTypes.Type(value = JobPojo.class, name = "source") })
+@JsonSubTypes({ @org.codehaus.jackson.annotate.JsonSubTypes.Type(value = JobSourceLinkPojo.class, name = "source") })
 @JsonTypeName("source")
 public interface JobSource {
 
-	public Link getLink();
+	public long getLink();
 
 	public List<Field> getData();
 	
