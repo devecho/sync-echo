@@ -14,6 +14,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.google.common.collect.Lists;
+
 import de.devsurf.echo.sync.persistence.FieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
 
@@ -25,23 +27,27 @@ public class LinkEntity {
 	@GeneratedValue
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
-	
+
 	@Column(name = "user", nullable = false)
 	private long user;
 
 	@OneToOne
-	@JoinColumn(name="provider", nullable=false)
+	@JoinColumn(name = "provider", nullable = false)
 	private ProviderEntity provider;
-	
+
 	@ElementCollection
 	@CollectionTable(name = "link_fields", joinColumns = @JoinColumn(name = "link_field_id"))
 	@Column(name = "link_field")
 	private List<FieldEntity> fields;
+	
+	public LinkEntity() {
+		fields = Lists.newArrayListWithExpectedSize(3);
+	}
 
 	public long getId() {
 		return id;
 	}
-	
+
 	public void setId(long id) {
 		this.id = id;
 	}
