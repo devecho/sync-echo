@@ -11,10 +11,14 @@ public class JobPojo implements Job {
 	private long id;
 	private String name;
 	private String description;
-	private boolean active;
+	private boolean enabledd;
 	private List<Field> data;
-//	private String source;
-//	private String target;
+	private JobSource source;
+	private JobTarget target;
+	
+	public JobPojo() {
+//		data = Lists.newArrayListWithExpectedSize(3);
+	}
 
 	@Override
 	public long getId() {
@@ -44,24 +48,38 @@ public class JobPojo implements Job {
 	}
 
 	@Override
-	public boolean isActive() {
-		return active;
+	public boolean isEnabled() {
+		return enabledd;
 	}
 
+	public void setEnabled(boolean enabled) {
+		this.enabledd = enabled;
+	}
+
+	@Override
+	public JobSource getSource() {
+		return source;
+	}
+
+	public void setSource(JobSource source) {
+		this.source = source;
+	}
+
+	@Override
+	public JobTarget getTarget() {
+		return target;
+	}	
+
+	public void setTarget(JobTarget target) {
+		this.target = target;
+	}
+	
 	@Override
 	public List<Field> getData() {
 		return data;
 	}
 
-	@Override
-	public JobSource getSource() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setData(List<Field> data) {
+		this.data = data;
 	}
-
-	@Override
-	public JobTarget getTarget() {
-		// TODO Auto-generated method stub
-		return null;
-	}	
 }
