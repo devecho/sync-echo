@@ -1,0 +1,2 @@
+update job target fields without value -> should fail
+remove field from job target with posting new ones
