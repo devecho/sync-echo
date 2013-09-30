@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>de.devsurf.echo.frameworks.rs</groupId>
 			<artifactId>rs-service</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<type>war</type>
 			<!--scope>provided</scope-->
 		</dependency>
