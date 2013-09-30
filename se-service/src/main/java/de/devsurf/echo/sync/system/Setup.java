@@ -7,6 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import de.devsurf.echo.sync.api.FieldType;
+import de.devsurf.echo.sync.jobs.persistence.JobEntity;
+import de.devsurf.echo.sync.jobs.persistence.JobTargetEntity;
+import de.devsurf.echo.sync.links.persistence.LinkEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
@@ -50,15 +53,42 @@ public class Setup {
 		fnsProvider.setWebsite(new URI("https://www.filenshare.com"));
 		fnsProvider.setVersion("all");
 		fnsProvider.setAuthentication(basicAuth);
-		
+				
 		EntityTransaction transaction = manager.getTransaction();
-		try{
-			transaction.begin();
-			manager.persist(fnsProvider);
-			transaction.commit();
-		} finally {
-			manager.close();
-		}
+		transaction.begin();
+		manager.persist(fnsProvider);
+		transaction.commit();
+		System.out.println("id: "+fnsProvider.getId());
+		transaction.begin();
+		
+		LinkEntity link = new LinkEntity();
+		link.getFields().add(username);
+		link.getFields().add(password);
+		link.getFields().add(url);
+		link.getFields().add(version);
+		link.setProvider(fnsProvider);
+		
+		manager.persist(link);
+		transaction.commit();
+		transaction.begin();
+		
+		JobEntity job = new JobEntity();
+		job.setEnabled(true);
+		job.setDescription("Copy");
+		job.setName("fileNshare copier");
+		
+		JobTargetEntity source = new JobTargetEntity();
+		source.setLink(link);
+		job.setSource(source);
+		
+		JobTargetEntity target = new JobTargetEntity();
+		target.setLink(link);
+		job.setTarget(target);
+		
+		manager.persist(job);
+		transaction.commit();
+
+		manager.close();
 		
 		DONE = true;
 		return "done";
