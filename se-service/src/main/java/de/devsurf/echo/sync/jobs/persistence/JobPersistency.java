@@ -11,38 +11,38 @@ import javax.persistence.TypedQuery;
 import de.devsurf.echo.sync.persistence.ItemAlreadyExistsException;
 
 
-public class JobsPersistency {
+public class JobPersistency {
 	@Inject
 	private EntityManager manager;
 	
-	public JobEntity merge(JobEntity link) throws ItemAlreadyExistsException {
+	public JobEntity merge(JobEntity job) throws ItemAlreadyExistsException {
 		EntityTransaction transaction = manager.getTransaction();
 		try {
 			transaction.begin();
-			link = manager.merge(link);
+			job = manager.merge(job);
 			transaction.commit();			
 		} catch(EntityExistsException ex) {
-			throw new ItemAlreadyExistsException(link.getId(), "link", ex);
+			throw new ItemAlreadyExistsException(job.getId(), "job", ex);
 		}
-		return link;
+		return job;
 	}
 	
-	public JobEntity persist(JobEntity link) throws ItemAlreadyExistsException {
+	public JobEntity persist(JobEntity job) throws ItemAlreadyExistsException {
 		EntityTransaction transaction = manager.getTransaction();
 		try {
 			transaction.begin();
-			manager.persist(link);
+			manager.persist(job);
 			transaction.commit();			
 		} catch(EntityExistsException ex) {
-			throw new ItemAlreadyExistsException(link.getId(), "link", ex);
+			throw new ItemAlreadyExistsException(job.getId(), "job", ex);
 		}
-		return link;
+		return job;
 	}
 	
-	public void delete(JobEntity link) {
+	public void delete(JobEntity job) {
 		EntityTransaction transaction = manager.getTransaction();
 		transaction.begin();
-		manager.remove(link);
+		manager.remove(job);
 		transaction.commit();
 	}
 	
@@ -51,7 +51,7 @@ public class JobsPersistency {
 	}
 	
 	public List<JobEntity> findAll() {
-		TypedQuery<JobEntity> query = manager.createNamedQuery("links.findAll", JobEntity.class);
+		TypedQuery<JobEntity> query = manager.createNamedQuery("jobs.findAll", JobEntity.class);
 		return query.getResultList();
 	}
 }
