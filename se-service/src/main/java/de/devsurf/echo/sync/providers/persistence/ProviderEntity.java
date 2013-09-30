@@ -30,7 +30,6 @@ public class ProviderEntity {
 	private URI website;
 	
 	@Embedded
-//	@JoinColumn(name = "auth_type", nullable = false, unique = true)
 	private ProviderAuthenticationEntity authentication;
 
 	public long getId() {
