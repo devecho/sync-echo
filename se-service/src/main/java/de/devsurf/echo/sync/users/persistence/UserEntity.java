@@ -41,11 +41,4 @@ public class UserEntity {
 		@Temporal(TemporalType.TIMESTAMP)
 		private Date lastChanged;
 	}
-	
-	/*
-	 	SecureRandom random = new SecureRandom();
-		byte bytes[] = new byte[20];
-		random.nextBytes(bytes);
-		byte seed[] = random.generateSeed(20);
-	 */
 }

@@ -1,10 +1,10 @@
 package de.devsurf.echo.sync.system;
 
-
-import java.net.URI;
-import java.util.Date;
+import java.io.UnsupportedEncodingException;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
@@ -13,195 +13,94 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.slf4j.Logger;
 
+import de.devsurf.common.lang.formatter.ExceptionMessage;
+import de.devsurf.common.lang.formatter.ToStringMessage;
+import de.devsurf.echo.frameworks.rs.api.Log;
 import de.devsurf.echo.frameworks.rs.api.Publishable.AbstractEndpoint;
-import de.devsurf.echo.frameworks.rs.api.Type;
-import de.devsurf.echo.frameworks.rs.api.Typed;
 import de.devsurf.echo.sync.Resources.ResourcePath;
-
+import de.devsurf.echo.sync.system.transport.Registration;
+import de.devsurf.echo.sync.system.transport.Status;
+import de.devsurf.echo.sync.users.persistence.UserEntity;
+import de.devsurf.echo.sync.users.persistence.UserPersistency;
+import de.devsurf.echo.sync.utils.Mailing;
+import de.devsurf.echo.sync.utils.Mailing.MailConfigurationException;
 
 @Path(ResourcePath.SYSTEM_PATH)
 public class SystemResource extends AbstractEndpoint {
 	@Inject
 	private Setup setup;
+
+	@Inject
+	private UserPersistency users;
 	
+	@Inject
+	private Mailing mailing;
+
+	@Log
+	private Logger logger;
+
 	@Override
 	public String description() {
 		return "Endpoint returns the information about the system and its status.";
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@Path("setup")
 	public Response setup() throws Exception {
 		return Response.ok(setup.doIt()).build();
 	}
-	
+
 	@HEAD
 	@Path("status")
 	public Response available() {
-		Status status = new Status();
-		status.id = Long.toString(System.nanoTime());
-		status.title = "actual system status";
-		status.message = "running";
-
-		return Response.ok(status).build();
+		return status();
 	}
 
 	@GET
 	@Path("status")
 	public Response status() {
 		Status status = new Status();
-		status.id = Long.toString(System.nanoTime());
-		status.title = "actual system status";
-		status.message = "running";
+		status.setId(Long.toString(System.nanoTime()));
+		status.setTitle("actual system status");
+		status.setMessage("running");
 
 		return Response.ok(status).build();
 	}
 
 	@POST
 	@Path("registration")
-	public Response register(RegistrationRequest request) {
+	public Response register(Registration request) throws UnsupportedEncodingException, MessagingException, MailConfigurationException {
+		String email = request.getEmail();
+		if(email == null || email.length() == 0) {
+			throw new BadRequestException(ExceptionMessage.format("No email was specified.").build());
+		}
+		
+//		UserEntity user = users.find(email);
+//		if (user != null) {
+//			logger.error(ExceptionMessage.format("User already exists.")
+//					.addParameter("user", email).build());
+//			throw new BadRequestException();
+//		}
+//		
+//		long referrer = request.getReferrer();
+//		if(referrer != 0) {
+//			UserEntity referrerEntity = users.get(referrer);
+//			if (referrerEntity == null) {
+//				logger.error(ExceptionMessage.format("Referrer was not found.")
+//						.addParameter("referrer", referrer).build());
+//				throw new BadRequestException();
+//			}
+//		}
+		
+		mailing.sendMail("daniel.manzke@googlemail.com", "daniel.manzke@googlemail.com", email, "service test mail",
+				"my mail");
+		System.out.println("sent");
+		
+		// create registration token (similar to the access token)
+		// send mail
 		return Response.ok().build();
-	}
-
-	@JsonPropertyOrder({ "type", "id", "title", "message", "level", "url",
-			"created" })
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	@JsonSerialize(include = Inclusion.NON_NULL)
-	public static class Status implements Typed {
-		private String id;
-		private String title;
-		private String message;
-		private String level;
-		private URI url;
-		private Date created;
-
-		public static final Type TYPE = new Type() {
-			@Override
-			public String value() {
-				return "status";
-			}
-		};
-
-		@Override
-		public Type type() {
-			return TYPE;
-		}
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public void setMessage(String message) {
-			this.message = message;
-		}
-
-		public String getLevel() {
-			return level;
-		}
-
-		public void setLevel(String level) {
-			this.level = level;
-		}
-
-		public URI getUrl() {
-			return url;
-		}
-
-		public void setUrl(URI url) {
-			this.url = url;
-		}
-
-		public Date getCreated() {
-			return created;
-		}
-
-		public void setCreated(Date created) {
-			this.created = created;
-		}
-	}
-
-	@JsonPropertyOrder({ "type", "id", "name", "email", "referrer", "created"})
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	@JsonSerialize(include = Inclusion.NON_NULL)
-	public static class RegistrationRequest implements Typed {
-		private String id;
-		private String name;
-		private String email;
-		private String referrer;
-		private Date created;
-
-		public static final Type TYPE = new Type() {
-			@Override
-			public String value() {
-				return "registration";
-			}
-		};
-
-		@Override
-		public Type type() {
-			return TYPE;
-		}
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public void setEmail(String email) {
-			this.email = email;
-		}
-
-		public String getReferrer() {
-			return referrer;
-		}
-
-		public void setReferrer(String referrer) {
-			this.referrer = referrer;
-		}
-
-		public Date getCreated() {
-			return created;
-		}
-
-		public void setCreated(Date created) {
-			this.created = created;
-		}
 	}
 }
