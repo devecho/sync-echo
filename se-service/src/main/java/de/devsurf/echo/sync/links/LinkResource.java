@@ -31,6 +31,7 @@ import de.devsurf.echo.sync.links.persistence.LinkEntity;
 import de.devsurf.echo.sync.links.persistence.LinksPersistency;
 import de.devsurf.echo.sync.persistence.FieldEntity;
 import de.devsurf.echo.sync.persistence.ItemAlreadyExistsException;
+import de.devsurf.echo.sync.providers.api.Provider;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
@@ -149,15 +150,16 @@ public class LinkResource extends AbstractEndpoint {
 	}
 
 	private void validateLink(Link link) {
-		long providerId = link.getProvider();
-		ProviderEntity provider = retrieval.find(providerId);
-		if (provider == null) {
+		Provider provider = link.getProvider();
+		long providerId = provider.getId();
+		ProviderEntity providerEntity = retrieval.get(providerId);
+		if (providerEntity == null) {
 			throw new BadRequestException(ErrorResponse.item("provider")
 					.withId(providerId).forStatus(Status.BAD_REQUEST));
 		}
 
 		List<Field> linkFields = link.getData();
-		ProviderAuthenticationEntity providerAuthentication = provider
+		ProviderAuthenticationEntity providerAuthentication = providerEntity
 				.getAuthentication();
 		List<ProviderAuthenticationFieldEntity> providerFields = providerAuthentication
 				.getFields();

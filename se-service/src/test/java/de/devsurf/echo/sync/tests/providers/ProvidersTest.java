@@ -29,7 +29,6 @@ public class ProvidersTest extends GuicyfiedTestBase {
 		Assert.assertEquals(provider.getId(), 1);
 		Assert.assertEquals(provider.getName(), "fileNshare");
 		Assert.assertEquals(provider.getWebsite(), URI.create("https://www.filenshare.com"));
-		Assert.assertEquals(provider.type().value(), "provider");
 	}
 
 	@Test
@@ -38,7 +37,6 @@ public class ProvidersTest extends GuicyfiedTestBase {
 		Assert.assertEquals(provider.getId(), 1);
 		Assert.assertEquals(provider.getName(), "fileNshare");
 		Assert.assertEquals(provider.getWebsite(), URI.create("https://www.filenshare.com"));
-		Assert.assertEquals(provider.type().value(), "provider");
 	}
 
 	@Test
@@ -72,13 +70,6 @@ public class ProvidersTest extends GuicyfiedTestBase {
 		private String name;
 		private URI website;
 		private String version;
-		private TypePojo type;
-		
-		@Override
-		@JsonProperty("type")
-		public Type type() {
-			return type;
-		}
 
 		@Override
 		public long getId() {

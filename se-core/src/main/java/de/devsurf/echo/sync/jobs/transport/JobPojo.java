@@ -2,6 +2,8 @@ package de.devsurf.echo.sync.jobs.transport;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.jobs.api.Job;
 import de.devsurf.echo.sync.jobs.api.JobSource;
@@ -17,7 +19,7 @@ public class JobPojo implements Job {
 	private JobTarget target;
 	
 	public JobPojo() {
-//		data = Lists.newArrayListWithExpectedSize(3);
+		data = Lists.newArrayListWithExpectedSize(3);
 	}
 
 	@Override

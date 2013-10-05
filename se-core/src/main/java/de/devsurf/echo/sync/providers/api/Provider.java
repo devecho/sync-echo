@@ -2,24 +2,24 @@ package de.devsurf.echo.sync.providers.api;
 
 import java.net.URI;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-import de.devsurf.echo.frameworks.rs.api.Type;
-import de.devsurf.echo.frameworks.rs.api.Typed;
+import de.devsurf.echo.sync.providers.transport.ProviderPojo;
 
 @JsonPropertyOrder({ "type", "id", "name", "url", "version" })
 @JsonSerialize(include = Inclusion.ALWAYS)
-public interface Provider extends Typed {
-
-	public static final Type TYPE = new Type() {
-		@Override
-		public String value() {
-			return "provider";
-		}
-	};
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({ @org.codehaus.jackson.annotate.JsonSubTypes.Type(value = ProviderPojo.class, name = "provider") })
+@JsonTypeName("provider")
+public interface Provider {
 
 	public long getId();
 

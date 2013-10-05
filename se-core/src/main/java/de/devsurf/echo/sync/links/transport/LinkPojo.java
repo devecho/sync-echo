@@ -2,13 +2,20 @@ package de.devsurf.echo.sync.links.transport;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.links.api.Link;
+import de.devsurf.echo.sync.providers.api.Provider;
 
 public class LinkPojo implements Link {
 	private long id;
-	private long provider;
+	private Provider provider;
 	private List<Field> data;
+	
+	public LinkPojo() {
+		data = Lists.newArrayListWithExpectedSize(3);
+	}
 	
 	@Override
 	public long getId() {
@@ -20,11 +27,11 @@ public class LinkPojo implements Link {
 	}
 
 	@Override
-	public long getProvider() {
+	public Provider getProvider() {
 		return provider;
 	}
 
-	public void setProvider(long provider) {
+	public void setProvider(Provider provider) {
 		this.provider = provider;
 	}
 

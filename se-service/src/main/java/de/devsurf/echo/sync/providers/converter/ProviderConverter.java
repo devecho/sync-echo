@@ -24,11 +24,6 @@ public class ProviderConverter implements Converter<ProviderEntity, Provider> {
 			private ProviderEntity delegate = source;
 
 			@Override
-			public Type type() {
-				return TYPE;
-			}
-
-			@Override
 			public String getVersion() {
 				return delegate.getVersion();
 			}

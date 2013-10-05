@@ -13,17 +13,22 @@ import de.devsurf.echo.sync.links.persistence.LinkEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
+import de.devsurf.echo.sync.users.persistence.SecureRandomProvider.SecureRandom;
 
 public class Setup {
 	@Inject
 	private EntityManager manager;
+	
+	@Inject
+	@SecureRandom
+	private String random;
 	
 	//FIXME
 	public static boolean DONE = false;
 	
 	public String doIt() throws Exception {
 		if(DONE) {
-			return "already done";
+			return "already done - "+random;
 		}
 		
 		ProviderAuthenticationEntity basicAuth = new ProviderAuthenticationEntity("basic");
@@ -91,6 +96,6 @@ public class Setup {
 		manager.close();
 		
 		DONE = true;
-		return "done";
+		return "done - "+random;
 	}
 }

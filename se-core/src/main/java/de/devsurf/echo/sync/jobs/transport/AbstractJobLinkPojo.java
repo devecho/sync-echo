@@ -2,6 +2,8 @@ package de.devsurf.echo.sync.jobs.transport;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import de.devsurf.echo.sync.api.Field;
 
 public class AbstractJobLinkPojo {
@@ -9,7 +11,7 @@ public class AbstractJobLinkPojo {
 	private List<Field> data;
 	
 	public AbstractJobLinkPojo() {
-//		data = Lists.newArrayListWithExpectedSize(3);
+		data = Lists.newArrayListWithExpectedSize(3);
 	}
 
 	public long getLink() {

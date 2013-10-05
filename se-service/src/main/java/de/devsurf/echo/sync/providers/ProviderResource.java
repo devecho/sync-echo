@@ -49,7 +49,7 @@ public class ProviderResource extends AbstractEndpoint {
 			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
 		}
 		
-		ProviderEntity result = persistence.find(id);
+		ProviderEntity result = persistence.get(id);
 		if(result == null) {
 			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
 		}
@@ -69,7 +69,7 @@ public class ProviderResource extends AbstractEndpoint {
 		} catch (NumberFormatException e) {
 			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
 		}
-		ProviderEntity result = persistence.find(id);
+		ProviderEntity result = persistence.get(id);
 		if(result == null) {
 			return ErrorResponse.item("provider").withId(providerId).wasNotFound();
 		}

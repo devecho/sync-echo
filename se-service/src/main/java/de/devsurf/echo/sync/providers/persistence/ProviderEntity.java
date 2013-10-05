@@ -28,7 +28,7 @@ public class ProviderEntity {
 
 	@Column(name = "website", nullable = true, length = 256)
 	private URI website;
-	
+
 	@Embedded
 	private ProviderAuthenticationEntity authentication;
 

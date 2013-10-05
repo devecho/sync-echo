@@ -10,6 +10,7 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.links.transport.LinkPojo;
+import de.devsurf.echo.sync.providers.api.Provider;
 
 @JsonPropertyOrder({ "type", "id", "provider", "data" })
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -20,7 +21,7 @@ public interface Link {
 
 	public long getId();
 
-	public long getProvider();
+	public Provider getProvider();
 
 	public List<Field> getData();
 }

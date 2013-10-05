@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import de.devsurf.echo.frameworks.rs.api.Converter;
+import de.devsurf.echo.frameworks.rs.api.Converter.InfoConverter;
 import de.devsurf.echo.frameworks.rs.api.InstallableModule;
 import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
 import de.devsurf.echo.frameworks.rs.system.api.Framework;
@@ -33,8 +34,12 @@ import de.devsurf.echo.sync.providers.api.Provider;
 import de.devsurf.echo.sync.providers.api.ProviderAuthenticationField;
 import de.devsurf.echo.sync.providers.converter.ProviderAuthenticationFieldConverter;
 import de.devsurf.echo.sync.providers.converter.ProviderConverter;
+import de.devsurf.echo.sync.providers.converter.ProviderInfoConverter;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
+import de.devsurf.echo.sync.system.Setup;
+import de.devsurf.echo.sync.users.persistence.SecureRandomProvider;
+import de.devsurf.echo.sync.users.persistence.SecureRandomProvider.SecureRandom;
 
 public class Binder implements InstallableModule {
 	@Inject
@@ -48,8 +53,13 @@ public class Binder implements InstallableModule {
 
 	@Override
 	public void install(Framework framework) {
+		genericBinder.bindClass(Setup.class).install(framework);
 		genericBinder.bindClass(EntityManager.class)
 				.toProvider(PersistencyProvider.class)/*.asSingleton()*/
+				.install(framework);
+		
+		genericBinder.bindClass(String.class).annotatedWith(SecureRandom.class)
+				.toProvider(SecureRandomProvider.class)/*.asSingleton()*/
 				.install(framework);
 		
 		Type fieldList = literalBuilder.fromRawType(List.class).withType(Field.class).build();
@@ -63,6 +73,8 @@ public class Binder implements InstallableModule {
 				.withType(ProviderEntity.class, Provider.class).build();
 		genericBinder.bindType(providerType).to(ProviderConverter.class)
 				.install(framework);
+		genericBinder.bindType(providerType).annotatedWith(InfoConverter.class).to(ProviderInfoConverter.class)
+		.install(framework);
 		
 		Type providerFieldList = literalBuilder.fromRawType(List.class).withType(ProviderAuthenticationField.class).build();
 		Type providerFieldEntityList = literalBuilder.fromRawType(List.class).withType(ProviderAuthenticationFieldEntity.class).build();
