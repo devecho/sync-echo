@@ -3,7 +3,7 @@ package de.devsurf.echo.sync.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
+import de.devsurf.common.lang.converter.TwoWayConverter;
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.api.FieldType;
 

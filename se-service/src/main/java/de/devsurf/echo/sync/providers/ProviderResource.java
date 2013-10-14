@@ -13,7 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
-import de.devsurf.echo.frameworks.rs.api.Converter;
+import de.devsurf.common.lang.converter.Converter;
 import de.devsurf.echo.frameworks.rs.api.Publishable.AbstractEndpoint;
 import de.devsurf.echo.sync.Resources.ResourcePath;
 import de.devsurf.echo.sync.errors.ErrorResponse;

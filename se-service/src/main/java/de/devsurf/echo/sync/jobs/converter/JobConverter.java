@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
+import de.devsurf.common.lang.converter.TwoWayConverter;
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.jobs.api.Job;
 import de.devsurf.echo.sync.jobs.api.JobSource;

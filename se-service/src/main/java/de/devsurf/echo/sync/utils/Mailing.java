@@ -22,12 +22,12 @@ import org.slf4j.Logger;
 
 import com.google.common.base.Strings;
 
+import de.devsurf.common.lang.di.InjectLogger;
 import de.devsurf.common.lang.obfuscation.ObfuscatedString;
-import de.devsurf.echo.frameworks.rs.api.Log;
 
 public class Mailing {
 
-	@Log
+	@InjectLogger
 	private Logger logger;
 
 	private MailConfiguration configuration;
@@ -53,7 +53,7 @@ public class Mailing {
 		}
 
 		UsernamePasswordAuthenticator auth = null;
-		if (configuration.useAuth) {
+		if (configuration.authenticationRequired) {
 			auth = new UsernamePasswordAuthenticator(configuration.username,
 					configuration.password.deobfuscate());
 			sessionProperties.put("mail.smtp.auth", "true");
@@ -95,7 +95,7 @@ public class Mailing {
 		checkArgument(senderName != null && senderName.length() > 0,
 				"sender name was not specified [%s]", senderName);
 		checkArgument(to != null && to.length() > 0,
-				"receipient was not specified [%s]", to);
+				"recipient was not specified [%s]", to);
 		checkArgument(subject != null && subject.length() > 0,
 				"subject was not specified [%s]", subject);
 		checkArgument(text != null && text.length() > 0,
@@ -147,29 +147,29 @@ public class Mailing {
 	public static class MailConfiguration {
 		public static final String PROTOCOL_SMTP = "smtp";
 
+		protected int port;
+		protected String server;
 		protected String username;
 		protected ObfuscatedString password;
-		protected String server;
-		protected int port;
 		protected boolean useSSL;
-		protected boolean useAuth;
-		protected Auth auth = Auth.TLS;
+		protected boolean authenticationRequired;
+		protected TransportSecurity auth = TransportSecurity.NONE;
 
 		public static MailConfiguration google() {
 			MailConfiguration config = new MailConfiguration();
 			config.server = "smtp.gmail.com";
 			config.port = 587;
 			config.useSSL = true;
-			config.useAuth = true;
-			config.auth = Auth.TLS;
+			config.authenticationRequired = true;
+			config.auth = TransportSecurity.TLS;
 
 			return config;
 		}
-		
+
 		public void setPassword(String password) {
 			this.password = ObfuscatedString.obfuscate(password);
 		}
-		
+
 		public void setUsername(String username) {
 			this.username = username;
 		}
@@ -187,12 +187,13 @@ public class Mailing {
 			}
 		}
 
-		public static enum Auth {
-			SSL(Collections.<String, String> emptyMap()), TLS(Collections
+		public static enum TransportSecurity {
+			NONE(Collections.<String, String> emptyMap()), SSL(Collections
+					.<String, String> emptyMap()), TLS(Collections
 					.singletonMap("mail.smtp.starttls.enable", "true"));
 			private Map<String, String> options;
 
-			Auth(Map<String, String> options) {
+			TransportSecurity(Map<String, String> options) {
 				this.options = options;
 			}
 

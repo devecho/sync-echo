@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.devsurf.echo.frameworks.rs.api.Converter;
+import de.devsurf.common.lang.converter.Converter;
 import de.devsurf.echo.frameworks.rs.api.Type;
 import de.devsurf.echo.sync.providers.api.Provider;
 import de.devsurf.echo.sync.providers.api.ProviderAuthentication;

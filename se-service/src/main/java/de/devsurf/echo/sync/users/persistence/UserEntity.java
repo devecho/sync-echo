@@ -16,6 +16,22 @@ public class UserEntity {
 	private AccountEntity account;
 	private PasswordEntity password;
 	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public static class AccountEntity {
 		private String externalId;
 		private AccountType type;

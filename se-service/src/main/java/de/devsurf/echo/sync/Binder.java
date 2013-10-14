@@ -1,22 +1,35 @@
 package de.devsurf.echo.sync;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 
-import com.google.inject.name.Named;
+import org.slf4j.Logger;
 
-import de.devsurf.echo.frameworks.rs.api.Converter;
-import de.devsurf.echo.frameworks.rs.api.Converter.InfoConverter;
-import de.devsurf.echo.frameworks.rs.api.InstallableModule;
-import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
-import de.devsurf.echo.frameworks.rs.system.api.Framework;
-import de.devsurf.echo.frameworks.rs.system.api.GenericBinder;
-import de.devsurf.echo.frameworks.rs.system.api.ResourceBinder;
-import de.devsurf.echo.frameworks.rs.system.api.TypeLiteralBuilder;
+import com.google.common.base.Stopwatch;
+
+import de.devsurf.common.lang.converter.Converter;
+import de.devsurf.common.lang.converter.InfoConverter;
+import de.devsurf.common.lang.converter.TwoWayConverter;
+import de.devsurf.common.lang.di.InjectLogger;
+import de.devsurf.common.lang.di.SecureRandom;
+import de.devsurf.common.lang.di.SecureRandomProvider;
+import de.devsurf.common.lang.di.TypeLiteralBuilder;
+import de.devsurf.common.lang.secret.vault.Vault;
+import de.devsurf.echo.frameworks.rs.di.api.Framework;
+import de.devsurf.echo.frameworks.rs.di.api.GenericBinder;
+import de.devsurf.echo.frameworks.rs.di.api.InstallableModule;
+import de.devsurf.echo.frameworks.rs.di.api.ResourceBinder;
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.jobs.api.Job;
 import de.devsurf.echo.sync.jobs.api.JobSource;
@@ -39,11 +52,9 @@ import de.devsurf.echo.sync.providers.converter.ProviderConverter;
 import de.devsurf.echo.sync.providers.converter.ProviderInfoConverter;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
-//import de.devsurf.echo.sync.security.api.SecuredStore;
-//import de.devsurf.echo.sync.security.internal.ServerSecuredStore;
+import de.devsurf.echo.sync.security.internal.AccessTokenFactory;
+import de.devsurf.echo.sync.security.vault.internal.VaultService;
 import de.devsurf.echo.sync.system.Setup;
-import de.devsurf.echo.sync.users.persistence.SecureRandomProvider;
-import de.devsurf.echo.sync.users.persistence.SecureRandomProvider.SecureRandom;
 import de.devsurf.echo.sync.utils.Mailing.MailConfiguration;
 
 public class Binder implements InstallableModule {
@@ -55,33 +66,59 @@ public class Binder implements InstallableModule {
 
 	@Inject
 	private TypeLiteralBuilder literalBuilder;
-	
+
 	@Inject
 	@Named("email.username")
 	private String username;
-	
+
 	@Inject
 	@Named("email.password")
 	private String password;
 
+	@InjectLogger
+	private Logger logger;
+
 	@Override
 	public void install(Framework framework) {
+		Stopwatch stopwatch = Stopwatch.createStarted();
+
+		try {
+			genericBinder.bindClass(String.class).named("mac").to(readMac())
+					.install(framework);
+		} catch (IOException e) {
+			logger.error("Fatal failure, while trying to read the mac adress",
+					e);
+		}
+
+		List<String> values = new ArrayList<String>(Arrays.asList(
+				"6CA7A09BE52B85FB", "B47D4D8AD573E168", "E1FB9B104F5317F0",
+				"13EAA1AC17B57147"));
+		Type valuesType = literalBuilder.fromRawType(List.class)
+				.withType(String.class).build();
+		genericBinder.bindType(valuesType).named("values").to(values)
+				.install(framework);
+
+		genericBinder.bindClass(String.class).named("bootstrap")
+				.to(VaultService.DEFAULT_ENCRYPT_ALGORITHM).install(framework);
+
+		genericBinder.bindClass(Vault.class)
+				.to(VaultService.class).asSingleton().install(framework);
+		
+		genericBinder.bindClass(AccessTokenFactory.class).asSingleton().install(framework);
+		
 		MailConfiguration google = MailConfiguration.google();
 		google.setUsername(username);
 		google.setPassword(password);
-		
-		genericBinder.bindClass(MailConfiguration.class).to(google).install(framework);
-		
-//		genericBinder.bindClass(SecuredStore.class)
-//				.to(ServerSecuredStore.class).asSingleton().install(framework);
+		genericBinder.bindClass(MailConfiguration.class).to(google)
+		.install(framework);
 
 		genericBinder.bindClass(Setup.class).install(framework);
 		genericBinder.bindClass(EntityManager.class)
-				.toProvider(PersistencyProvider.class)/* .asSingleton() */
+				.toProvider(PersistencyProvider.class)
 				.install(framework);
 
 		genericBinder.bindClass(String.class).annotatedWith(SecureRandom.class)
-				.toProvider(SecureRandomProvider.class)/* .asSingleton() */
+				.toProvider(SecureRandomProvider.class)
 				.install(framework);
 
 		Type fieldList = literalBuilder.fromRawType(List.class)
@@ -135,5 +172,27 @@ public class Binder implements InstallableModule {
 			binder.publish(resource.publishable).to(resource.path)
 					.install(framework);
 		}
+
+		long seconds = stopwatch.stop().elapsed(TimeUnit.MILLISECONDS);
+		logger.info("Binding time took " + seconds + " ms.");
+	}
+
+	private String readMac() throws IOException {
+		InetAddress address = InetAddress.getLocalHost();
+		NetworkInterface network = NetworkInterface.getByInetAddress(address);
+		byte[] mac = network.getHardwareAddress();
+
+		if (mac == null || mac.length == 0) {
+			logger.error("Fatal failure, MAC Adress couldn't be determined.");
+			return "00-00-00-00-00-00";
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < mac.length; i++) {
+			sb.append(String.format("%02X%s", mac[i],
+					(i < mac.length - 1) ? "-" : ""));
+		}
+
+		return sb.toString();
 	}
 }

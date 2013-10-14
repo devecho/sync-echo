@@ -5,8 +5,8 @@ import java.net.URI;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-import de.devsurf.echo.frameworks.rs.api.Converter;
-import de.devsurf.echo.frameworks.rs.api.Converter.InfoConverter;
+import de.devsurf.common.lang.converter.Converter;
+import de.devsurf.common.lang.converter.InfoConverter;
 import de.devsurf.echo.sync.providers.api.Provider;
 import de.devsurf.echo.sync.providers.api.ProviderAuthentication;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;

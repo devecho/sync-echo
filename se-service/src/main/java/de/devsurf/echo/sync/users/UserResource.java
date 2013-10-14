@@ -74,4 +74,10 @@ public class UserResource extends AbstractEndpoint {
 		}
 		return Response.ok().build();
 	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response fulfill() {
+		return Response.ok().build();
+	}
 }

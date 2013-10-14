@@ -21,8 +21,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
+import de.devsurf.common.lang.converter.TwoWayConverter;
 import de.devsurf.echo.frameworks.rs.api.Publishable.AbstractEndpoint;
-import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
 import de.devsurf.echo.sync.Resources.ResourcePath;
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.errors.ErrorResponse;
@@ -150,6 +150,7 @@ public class LinkResource extends AbstractEndpoint {
 	}
 
 	private void validateLink(Link link) {
+		//values can't be null in fields
 		Provider provider = link.getProvider();
 		long providerId = provider.getId();
 		ProviderEntity providerEntity = retrieval.get(providerId);
@@ -188,8 +189,10 @@ public class LinkResource extends AbstractEndpoint {
 			for (FieldEntity providerField : providerFields) {
 				if (providerField.getName().equalsIgnoreCase(
 						linkField.getName())) {
-					found = true;
-					break;
+					if(linkField.getValue() != null) {						
+						found = true;
+						break;
+					}
 				}
 			}
 			if (!found) {

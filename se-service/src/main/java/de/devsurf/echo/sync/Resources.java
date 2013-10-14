@@ -5,12 +5,16 @@ import de.devsurf.echo.frameworks.rs.api.Publishable;
 import de.devsurf.echo.sync.jobs.JobResource;
 import de.devsurf.echo.sync.links.LinkResource;
 import de.devsurf.echo.sync.providers.ProviderResource;
+import de.devsurf.echo.sync.system.RegistrationResource;
+import de.devsurf.echo.sync.system.SetupResource;
 import de.devsurf.echo.sync.system.SystemResource;
 import de.devsurf.echo.sync.users.UserResource;
 
 
 public enum Resources {
+	REGISTRATION(ResourcePath.REGISTRATION_PATH, RegistrationResource.class),
 	SYSTEM(ResourcePath.SYSTEM_PATH, SystemResource.class),
+	SETUP(ResourcePath.SETUP_PATH, SetupResource.class),
 	USERS(ResourcePath.USERS_PATH, UserResource.class),
 	JOBS(ResourcePath.JOBS_PATH, JobResource.class),
 	PROVIDERS(ResourcePath.PROVIDERS_PATH, ProviderResource.class),
@@ -28,8 +32,10 @@ public enum Resources {
 		return path;
 	}
 	
-	public static class ResourcePath {
+	public static class ResourcePath { 
+		public static final String REGISTRATION_PATH = "registration";
 		public static final String SYSTEM_PATH = "system";
+		public static final String SETUP_PATH = "setup";
 		public static final String USERS_PATH = "users";
 		public static final String JOBS_PATH = "jobs";
 		public static final String PROVIDERS_PATH = "providers";

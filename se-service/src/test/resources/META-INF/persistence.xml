@@ -6,7 +6,8 @@
 	<persistence-unit name="se-persistence">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>de.devsurf.echo.sync.jobs.persistence.JobEntity</class>
-		<class>de.devsurf.echo.sync.jobs.persistence.JobTargetEntity</class>		
+		<class>de.devsurf.echo.sync.jobs.persistence.JobTargetEntity</class>
+		<class>de.devsurf.echo.sync.system.persistence.SettingEntity</class>
 		<class>de.devsurf.echo.sync.links.persistence.LinkEntity</class>
 		<class>de.devsurf.echo.sync.providers.persistence.ProviderEntity</class>
 		<class>de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationEntity</class>

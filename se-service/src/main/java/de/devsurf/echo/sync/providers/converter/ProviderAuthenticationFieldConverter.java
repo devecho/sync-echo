@@ -3,7 +3,7 @@ package de.devsurf.echo.sync.providers.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.devsurf.echo.frameworks.rs.api.Converter;
+import de.devsurf.common.lang.converter.Converter;
 import de.devsurf.echo.sync.api.FieldType;
 import de.devsurf.echo.sync.providers.api.ProviderAuthenticationField;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity;

@@ -4,8 +4,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.devsurf.echo.frameworks.rs.api.Converter;
-import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
+import de.devsurf.common.lang.converter.Converter;
+import de.devsurf.common.lang.converter.InfoConverter;
+import de.devsurf.common.lang.converter.TwoWayConverter;
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.links.api.Link;
 import de.devsurf.echo.sync.links.persistence.LinkEntity;

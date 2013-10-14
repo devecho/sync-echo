@@ -5,8 +5,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 
+import de.devsurf.common.lang.converter.TwoWayConverter;
 import de.devsurf.common.lang.formatter.ExceptionMessage;
-import de.devsurf.echo.frameworks.rs.api.TwoWayConverter;
 import de.devsurf.echo.sync.api.Field;
 import de.devsurf.echo.sync.jobs.api.JobSource;
 import de.devsurf.echo.sync.jobs.persistence.JobTargetEntity;

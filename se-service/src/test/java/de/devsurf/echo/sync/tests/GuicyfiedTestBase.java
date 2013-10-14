@@ -11,13 +11,13 @@ import org.glassfish.jersey.test.TestProperties;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
-import de.devsurf.echo.frameworks.rs.service.startup.guice.GuicyfiedApplication;
+import de.devsurf.echo.sync.SyncApplication;
 
 public abstract class GuicyfiedTestBase extends JerseyTest {
 	@Override
 	protected Application configure() {
 		enable(TestProperties.LOG_TRAFFIC);
-		return ResourceConfig.forApplicationClass(GuicyfiedApplication.class);
+		return ResourceConfig.forApplicationClass(SyncApplication.class);
 	}
 	
 	@Override
@@ -34,9 +34,9 @@ public abstract class GuicyfiedTestBase extends JerseyTest {
 	@BeforeSuite
 	public void setUp() throws Exception {
 		super.setUp();
-		String message = target().path("system").path("setup").request().get(String.class);
+		String message = target().path("setup").request().get(String.class);
 		if(!"done".equalsIgnoreCase(message)) {
-			throw new Exception("System couldn't be setup.");
+			throw new Exception("System couldn't be setup. Message was: "+message);
 		}
 	}
 	

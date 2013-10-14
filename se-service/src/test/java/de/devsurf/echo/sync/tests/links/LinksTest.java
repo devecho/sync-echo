@@ -2,9 +2,11 @@ package de.devsurf.echo.sync.tests.links;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.testng.annotations.Test;
 
+import de.devsurf.echo.sync.Resources.ResourcePath;
 import de.devsurf.echo.sync.tests.GuicyfiedTestBase;
 
 public class LinksTest extends GuicyfiedTestBase {
@@ -15,7 +17,7 @@ public class LinksTest extends GuicyfiedTestBase {
 //		String answer = target.request().get(String.class);
 //		System.out.println(answer);
 		
-		String answer = target.path("system").request(MediaType.APPLICATION_JSON_TYPE).get(String.class);
+		Response answer = target.path(ResourcePath.LINKS_PATH).request(MediaType.APPLICATION_JSON_TYPE).get();
 		System.out.println(answer);
 	}
 	

@@ -10,48 +10,48 @@ import de.devsurf.echo.sync.api.FieldType;
 import de.devsurf.echo.sync.jobs.persistence.JobEntity;
 import de.devsurf.echo.sync.jobs.persistence.JobTargetEntity;
 import de.devsurf.echo.sync.links.persistence.LinkEntity;
+import de.devsurf.echo.sync.persistence.FieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderAuthenticationFieldEntity;
 import de.devsurf.echo.sync.providers.persistence.ProviderEntity;
-import de.devsurf.echo.sync.users.persistence.SecureRandomProvider.SecureRandom;
+import de.devsurf.echo.sync.system.persistence.SettingPersistency;
 
 public class Setup {
 	@Inject
 	private EntityManager manager;
 	
 	@Inject
-	@SecureRandom
-	private String random;
+	private SettingPersistency settings;
 	
 	//FIXME
 	public static boolean DONE = false;
 	
 	public String doIt() throws Exception {
 		if(DONE) {
-			return "already done - "+random;
+			return "already done";
 		}
 		
 		ProviderAuthenticationEntity basicAuth = new ProviderAuthenticationEntity("basic");
-		ProviderAuthenticationFieldEntity username = new ProviderAuthenticationFieldEntity();
-		username.setName("username");
-		username.setType(FieldType.TEXT);
-		basicAuth.getFields().add(username);
+		ProviderAuthenticationFieldEntity usernameDescriptor = new ProviderAuthenticationFieldEntity();
+		usernameDescriptor.setName("username");
+		usernameDescriptor.setType(FieldType.TEXT);
+		basicAuth.getFields().add(usernameDescriptor);
 		
-		ProviderAuthenticationFieldEntity password = new ProviderAuthenticationFieldEntity();
-		password.setName("password");
-		password.setType(FieldType.PASSWORD);
-		basicAuth.getFields().add(password);
+		ProviderAuthenticationFieldEntity passwordDescriptor = new ProviderAuthenticationFieldEntity();
+		passwordDescriptor.setName("password");
+		passwordDescriptor.setType(FieldType.PASSWORD);
+		basicAuth.getFields().add(passwordDescriptor);
 		
-		ProviderAuthenticationFieldEntity url = new ProviderAuthenticationFieldEntity();
-		url.setName("url");
-		url.setType(FieldType.URL);
-		basicAuth.getFields().add(url);
+		ProviderAuthenticationFieldEntity urlDescriptor = new ProviderAuthenticationFieldEntity();
+		urlDescriptor.setName("url");
+		urlDescriptor.setType(FieldType.URL);
+		basicAuth.getFields().add(urlDescriptor);
 		
-		ProviderAuthenticationFieldEntity version = new ProviderAuthenticationFieldEntity();
-		version.setName("version");
-		version.setType(FieldType.TEXT);
-		version.setOptional(true);
-		basicAuth.getFields().add(version);
+		ProviderAuthenticationFieldEntity versionDescriptor = new ProviderAuthenticationFieldEntity();
+		versionDescriptor.setName("version");
+		versionDescriptor.setType(FieldType.TEXT);
+		versionDescriptor.setOptional(true);
+		basicAuth.getFields().add(versionDescriptor);
 		
 		ProviderEntity fnsProvider = new ProviderEntity();
 		fnsProvider.setName("fileNshare");
@@ -66,11 +66,25 @@ public class Setup {
 		System.out.println("id: "+fnsProvider.getId());
 		transaction.begin();
 		
+		FieldEntity usernameField = new ProviderAuthenticationFieldEntity();
+		usernameField.setName("username");
+		usernameField.setValue("daniel.manzke@googlemail.com");
+		FieldEntity passwordField = new ProviderAuthenticationFieldEntity();
+		passwordField.setName("password");
+		passwordField.setValue("1.0");
+		FieldEntity urlField = new ProviderAuthenticationFieldEntity();
+		urlField.setName("url");
+		urlField.setValue("http://github.com/devecho");
+		FieldEntity versionField = new ProviderAuthenticationFieldEntity();
+		versionField.setName("version");
+		versionField.setValue("1.0");
+		
+
 		LinkEntity link = new LinkEntity();
-		link.getFields().add(username);
-		link.getFields().add(password);
-		link.getFields().add(url);
-		link.getFields().add(version);
+		link.getFields().add(usernameField);
+		link.getFields().add(passwordField);
+		link.getFields().add(urlField);
+		link.getFields().add(versionField);
 		link.setProvider(fnsProvider);
 		
 		manager.persist(link);
@@ -95,7 +109,9 @@ public class Setup {
 
 		manager.close();
 		
+		
+		
 		DONE = true;
-		return "done - "+random;
+		return "done";
 	}
 }
