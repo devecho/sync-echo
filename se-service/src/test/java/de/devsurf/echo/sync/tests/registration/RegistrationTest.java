@@ -18,6 +18,7 @@ public class RegistrationTest extends GuicyfiedTestBase {
 //		System.out.println(answer);
 		
 		Otp otp = target.path(ResourcePath.REGISTRATION_PATH).request(MediaType.APPLICATION_JSON_TYPE).get(Otp.class);
+//		String otp = target.path(ResourcePath.REGISTRATION_PATH).request(MediaType.APPLICATION_JSON_TYPE).get(String.class);
 		System.out.println(otp);
 	}
 }
